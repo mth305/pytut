@@ -91,9 +91,7 @@ def play(player1, player2, rounds, p1name=None, p2name=None):
 
     for r in range(rounds):
         amoves = player1(moves, p1name)
-        sanity_check(moves, coins)
         bmoves = player2(moves, p2name)
-        sanity_check(moves, coins)
         moves[p1name] = amoves
         moves[p2name] = bmoves
 

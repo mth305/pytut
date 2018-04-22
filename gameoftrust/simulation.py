@@ -32,7 +32,7 @@ def next_players(results, nr_kick=5):
     return {name:get_func(name) for name in pnames}
 
 def count_types(result, types):
-    ptypes = [name.split("#")[0] for name, _ in res]
+    ptypes = [name.split("#")[0] for name, _ in result]
     ptypes = collections.Counter(ptypes)
     for t in types:
         if t not in ptypes:
@@ -43,16 +43,23 @@ def count_types(result, types):
 def simulation(init_players, rounds, steps, nr_kick):
     players = init_players
     results = []
+    evolution = {t:[] for t in player_types}
 
     for s in range(steps):
 
         total_coins, _ = tournament(players, rounds)
-        round_res = sorted_results(total_coins)
-        players = next_players(round_res, nr_kick=nr_kick)
+        res = sorted_results(total_coins)
+        players = next_players(res, nr_kick=nr_kick)
 
-        results.append(round_res)
+        results.append(res)
 
-    return results
+        ptypes = count_types(res, player_types)
+        for t, cnt in ptypes.items():
+            evolution[t].append(cnt)
+
+        print("Step: {:>3}".format(s), ptypes)
+
+    return results, evolution
 
 if __name__ == "__main__":
     import collections
@@ -66,28 +73,27 @@ if __name__ == "__main__":
         [cooperator]*10
     )
 
-    #players = make_players(
-    #    [cooperator]*30 + \
-    #    [cheater] + \
-    #    [copycat]
-    #)
+    players = make_players(
+        [cooperator]*18 + \
+        [cheater] + \
+        [copycat]
+    )
+
+    players = make_players(
+        [cheater]*9 + \
+        [cooperator]*9 + \
+        [copycat]*3
+    )
 
     player_types = {name.split("#")[0] for name in players}
 
-    rounds  = 5
-    steps   = 30
+    rounds  = 20
+    steps   = 50
     nr_kick = 5
 
-    results = simulation(players, rounds, steps, nr_kick)
-    evolution = {t:[] for t in player_types}
+    results, evolution = simulation(players, rounds, steps, nr_kick)
 
-    for res in results:
-        ptypes = count_types(res, player_types)
-        print(ptypes)
-        for t, cnt in ptypes.items():
-            evolution[t].append(cnt)
-
-    for t, cnt in evolution.items():
-        plt.plot(cnt, label=t)
-    plt.legend()
-    plt.show()
+    #for t, cnt in evolution.items():
+    #    plt.plot(cnt, label=t)
+    #plt.legend()
+    #plt.show()
