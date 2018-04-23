@@ -20,10 +20,10 @@ def load_pattern(url):
     grid = [line_to_binary(line) for line in grid]
     return np.array(grid, dtype=int)
 
-def evolve(grid):
+def evolve(grid, mode="wrap"):
 
     # boundary conditions
-    pgrid = np.pad(grid, mode="wrap", pad_width=1)
+    pgrid = np.pad(grid, mode=mode, pad_width=1)
     neighbors = pgrid[:-2,  :-2] + pgrid[1:-1, :-2] + pgrid[2:,  :-2] \
               + pgrid[:-2, 1:-1] +                  + pgrid[2:, 1:-1] \
               + pgrid[:-2, 2:  ] + pgrid[1:-1, 2:]  + pgrid[2:, 2:  ]
@@ -51,8 +51,12 @@ if __name__ == "__main__":
     parser.add_argument("--pattern", type=str, default="",
                         help="Starting pattern. Available patterns:\
                         'gun', 'reflector' or 'spaceship'")
-    parser.add_argument("--steps", "-s", type=int, default=200,
+    parser.add_argument("--steps", "-s", type=int, default=2000,
                         help="Number of steps to run.")
+    parser.add_argument("--mode", type=str, default="wrap",
+                        help="""mode to be passed to np.pad().
+                        defines boudanry conditions.
+                        tested with 'wrap', 'constant'""")
     args = parser.parse_args()
 
     if args.pattern == "gun":
@@ -71,7 +75,7 @@ if __name__ == "__main__":
 
     frames = []
     for s in range(args.steps):
-        evolve(grid)
+        evolve(grid, args.mode)
         frames.append(grid.copy())
     
     anim = animate_imshow(frames, cmap_name="viridis")
