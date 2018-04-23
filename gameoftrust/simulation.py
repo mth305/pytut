@@ -1,3 +1,4 @@
+import collections
 from tournament import tournament, sorted_results, make_players
 from got import cheater, cooperator, copycat, detective, grudger
 
@@ -43,7 +44,9 @@ def count_types(result, types):
 def simulation(init_players, rounds, steps, nr_kick):
     players = init_players
     results = []
+    player_types = {name.split("#")[0] for name in players}
     evolution = {t:[] for t in player_types}
+    results = []
 
     for s in range(steps):
 
@@ -51,18 +54,14 @@ def simulation(init_players, rounds, steps, nr_kick):
         res = sorted_results(total_coins)
         players = next_players(res, nr_kick=nr_kick)
 
-        results.append(res)
-
         ptypes = count_types(res, player_types)
         for t, cnt in ptypes.items():
             evolution[t].append(cnt)
-
+        results.append(ptypes)
         print("Step: {:>3}".format(s), ptypes)
-
     return results, evolution
 
 if __name__ == "__main__":
-    import collections
     import matplotlib.pyplot as plt
 
     players = make_players(
@@ -85,7 +84,6 @@ if __name__ == "__main__":
         [copycat]*3
     )
 
-    player_types = {name.split("#")[0] for name in players}
 
     rounds  = 20
     steps   = 50
@@ -93,7 +91,7 @@ if __name__ == "__main__":
 
     results, evolution = simulation(players, rounds, steps, nr_kick)
 
-    #for t, cnt in evolution.items():
-    #    plt.plot(cnt, label=t)
-    #plt.legend()
-    #plt.show()
+    for t, cnt in evolution.items():
+        plt.plot(cnt, label=t)
+    plt.legend()
+    plt.show()
