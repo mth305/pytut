@@ -17,3 +17,8 @@ lat = geo["location"]["lat"]
 lon = geo["location"]["lng"]
 
 print(lat, lon)
+
+
+# Use public api to get lat/lon, then find sunset/sunrise
+
+# Kitten API (http://placekitten.com/)
