@@ -26,9 +26,5 @@ Very nice talk by Richard Feynman. [video](https://www.youtube.com/watch?v=EKWGG
 [video](https://www.destroyallsoftware.com/talks/wat)
 
 ### XKCD
-#
-* [link](https://xkcd.com/664/ )
-* [link](https://xkcd.com/1513/)
-* [link](https://xkcd.com/979/ )
 
 'import anitgravity'
